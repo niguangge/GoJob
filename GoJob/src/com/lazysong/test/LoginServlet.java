@@ -15,6 +15,7 @@ import com.lazysong.test.beans.Mark_info;
 import com.lazysong.test.beans.Place;
 import com.lazysong.test.beans.Resume;
 import com.lazysong.test.beans.User;
+import com.lazysong.test.beans.Willings;
 
 public class LoginServlet extends HttpServlet {
 
@@ -124,6 +125,9 @@ public class LoginServlet extends HttpServlet {
 			tableType = new Mark_com();
 			break;
 		case RequestCode.CAT_WILLING:// CAT_WILLING
+			user_id = request.getParameter("USER_ID");
+			sql=rm.getSearchSql("MARK_INFO","USER_ID",user_id);
+			tableType=new Mark_info();
 			break;
 		case RequestCode.EDIT_WILLING:// EDIT_WILLING
 			break;

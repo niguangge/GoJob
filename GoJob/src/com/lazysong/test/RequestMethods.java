@@ -131,7 +131,7 @@ public class RequestMethods {
 		case "User":
 			getUserList(tableType, list, ret);
 			break;
-		case "Wilings":
+		case "Willings":
 			getWillingsList(tableType, list, ret);
 			break;
 		default:
