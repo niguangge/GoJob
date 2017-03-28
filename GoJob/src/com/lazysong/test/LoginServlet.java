@@ -59,6 +59,7 @@ public class LoginServlet extends HttpServlet {
 			return;
 		}
 		int requestCode = Integer.parseInt(request.getParameter("requestcode"));
+		System.out.println(requestCode);
 		PrintWriter out = response.getWriter();
 		String sql = null;
 		RequestMethods rm = new RequestMethods();// 建立RM对象，同时建立与数据库的连接
