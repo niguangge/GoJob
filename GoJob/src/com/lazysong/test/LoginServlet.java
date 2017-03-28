@@ -67,6 +67,7 @@ public class LoginServlet extends HttpServlet {
 		// 此值非空时，标明是哪个case需要判断结果集是否存在,以便输出RequestCode中对应字符串
 		String nullParament = null;// 当某参数为空时,令此字符串等于该参数的名字,便于输出
 		String exceptionName = null;// 异常名称,便于输出
+		boolean updateFlag = false;
 		switch (requestCode) {
 		case RequestCode.USER_EXISTS:
 			// USER_EXISTS
@@ -102,20 +103,17 @@ public class LoginServlet extends HttpServlet {
 			} else {
 				tableType = new Post_information();
 				sql = "select * from POST_INFORMATION where COMPANY_NAME like \'%"
-						+ keyword
-						+ "%\'";
+						+ keyword + "%\'";
 				result = rm.getSearchResult(tableType, sql, judgeName);
 				out.println("result by COMPANY_NAME");
 				out.println(result);
 				sql = "select * from POST_INFORMATION where WORK_PLACE like \'%"
-						+ keyword
-						+ "%\'";
+						+ keyword + "%\'";
 				result = rm.getSearchResult(tableType, sql, judgeName);
 				out.println("result by WORK_PLACE");
 				out.println(result);
 				sql = "select * from POST_INFORMATION where CATEGORY_NAME like \'%"
-						+ keyword
-						+ "%\'";
+						+ keyword + "%\'";
 				result = rm.getSearchResult(tableType, sql, judgeName);
 				out.println("result by CATEGORY_NAME");
 				out.println(result);
@@ -135,8 +133,17 @@ public class LoginServlet extends HttpServlet {
 			tableType = new Company();
 			break;
 		case RequestCode.MARK_POST: // MARK_POST
+			user_id = request.getParameter("USER_ID");
+			String post_id = request.getParameter("POST_ID");
+			sql = "insert into MARK_INFO values(\"" + user_id + "\","
+					+ post_id + ")";
+			updateFlag = true;
 			break;
 		case RequestCode.UNMARK_POST: // UNMARK_POST
+			user_id = request.getParameter("USER_ID");
+			post_id = request.getParameter("POST_ID");
+			sql = "delete from MARK_INFO where USER_ID="+user_id+"&POST_ID="+post_id;
+			updateFlag = true;
 			break;
 		case RequestCode.HIDE_POST:// HIDE_POST
 			break;
@@ -171,8 +178,17 @@ public class LoginServlet extends HttpServlet {
 		case RequestCode.EDIT_WILLING:// EDIT_WILLING
 			break;
 		case RequestCode.WATCH_CMP:// WATCH_CMP
+			user_id = request.getParameter("USER_ID");
+			String company_id = request.getParameter("COMPANY_ID");
+			sql = "insert into MARK_COM values(\"" + user_id + "\","
+					+ company_id + ")";
+			updateFlag = true;
 			break;
 		case RequestCode.UNWATCH_CMP:// UNWATCH_CMP
+			user_id = request.getParameter("USER_ID");
+			company_id = request.getParameter("COMPANY_ID");
+			sql = "delete from MARK_COM where USER_ID="+user_id+"&COMPANY_ID="+company_id;
+			updateFlag = true;
 			break;
 		case RequestCode.GET_RECOMAND:// GET_RECOMAND
 			break;
@@ -180,15 +196,21 @@ public class LoginServlet extends HttpServlet {
 			out.println("Error requestcode");
 			return;
 		}
-		if (limit != null)// 在sql语句添加limit
-			sql = sql + " limit " + limit;
-		else
-			sql = sql + " limit 10";// 到这步SQL语句生成完毕
 		if (exceptionName != null) {
 			out.println(exceptionName);
 		} else if (nullParament != null) {
 			out.println(nullParament + ": No parament input");
+		} else if (updateFlag == true) {
+			if (rm.getUpdateResult(sql) == 0)
+				out.println("Update fail");
+			else
+				out.println("Update success");
+
 		} else {
+			if (limit != null)// 在sql语句添加limit
+				sql = sql + " limit " + limit;
+			else
+				sql = sql + " limit 10";// 到这步SQL语句生成完毕
 			result = rm.getSearchResult(tableType, sql, judgeName);
 			out.println(result);
 			out.flush();

@@ -323,4 +323,17 @@ public class RequestMethods {
 			e.printStackTrace();
 		}
 	}
+
+	public int getUpdateResult(String sql) {
+		// TODO Auto-generated method stub
+			try {
+				pst = conn.prepareStatement(sql);
+				return pst.executeUpdate();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				return 0;
+			}
+
+	}
 }
