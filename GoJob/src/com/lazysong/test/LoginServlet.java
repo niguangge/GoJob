@@ -81,6 +81,9 @@ public class LoginServlet extends HttpServlet {
 		case RequestCode.UPLOAD_USER: // UPLOAD_USER
 			break;
 		case RequestCode.CAT_BY_CATEGRY: // CAT_BY_CATEGRY
+			String cate=request.getParameter("CATEGORY");
+			String catevalue=request.getParameter("CATE_VALUE");
+			sql = rm.getSearchSql("POST_INFORMATION", cate, catevalue);
 			break;
 		case RequestCode.SEARCH: // SEARCH
 			break;
