@@ -13,9 +13,9 @@ import com.lazysong.test.beans.Industry_category;
 import com.lazysong.test.beans.Mark_com;
 import com.lazysong.test.beans.Mark_info;
 import com.lazysong.test.beans.Place;
+import com.lazysong.test.beans.Post_information;
 import com.lazysong.test.beans.Resume;
 import com.lazysong.test.beans.User;
-import com.lazysong.test.beans.Willings;
 
 public class LoginServlet extends HttpServlet {
 
@@ -59,20 +59,20 @@ public class LoginServlet extends HttpServlet {
 			return;
 		}
 		int requestCode = Integer.parseInt(request.getParameter("requestcode"));
-		System.out.println(requestCode);
 		PrintWriter out = response.getWriter();
 		String sql = null;
 		RequestMethods rm = new RequestMethods();// 建立RM对象，同时建立与数据库的连接
 		Object tableType = null;// 声明所需集合类型
 		String judgeName = null;// 此值为null时，说明result需返回详细结果
 		// 此值非空时，标明是哪个case需要判断结果集是否存在,以便输出RequestCode中对应字符串
-		String nullParament = null;
+		String nullParament = null;// 当某参数为空时,令此字符串等于该参数的名字,便于输出
+		String exceptionName = null;// 异常名称,便于输出
 		switch (requestCode) {
 		case RequestCode.USER_EXISTS:
 			// USER_EXISTS
 			String user_id = request.getParameter("USER_ID");
 			if (user_id == null) {
-				nullParament = ResultCode.USER_EXISTS;
+				nullParament = "USER_ID";
 			}
 			sql = rm.getSearchSql("USER", "USER_ID", user_id);
 			judgeName = ResultCode.USER_EXISTS;
@@ -81,11 +81,46 @@ public class LoginServlet extends HttpServlet {
 		case RequestCode.UPLOAD_USER: // UPLOAD_USER
 			break;
 		case RequestCode.CAT_BY_CATEGRY: // CAT_BY_CATEGRY
-			String cate=request.getParameter("CATEGORY");
-			String catevalue=request.getParameter("CATE_VALUE");
-			sql = rm.getSearchSql("POST_INFORMATION", cate, catevalue);
+			String cate = request.getParameter("CATEGORY");
+			String catevalue = request.getParameter("CATE_VALUE");
+			if (cate == null) {
+				nullParament = "CATEGORY";
+			} else if (catevalue == null) {
+				nullParament = "CATE_VALUE";
+			} else if (cate.equals("COMPANY_NAME") || cate.equals("WORK_PLACE")
+					|| cate.equals("CATEGORY_NAME")) {
+				sql = rm.getSearchSql("POST_INFORMATION", cate, catevalue);
+				tableType = new Post_information();
+			} else {
+				exceptionName = "Unsupport category to query";
+			}
 			break;
 		case RequestCode.SEARCH: // SEARCH
+			String keyword = request.getParameter("KEYWORD");
+			if (keyword == null) {
+				nullParament = "KEYWORD";
+			} else {
+				tableType = new Post_information();
+				sql = "select * from POST_INFORMATION where COMPANY_NAME like \'%"
+						+ keyword
+						+ "%\'";
+				result = rm.getSearchResult(tableType, sql, judgeName);
+				out.println("result by COMPANY_NAME");
+				out.println(result);
+				sql = "select * from POST_INFORMATION where WORK_PLACE like \'%"
+						+ keyword
+						+ "%\'";
+				result = rm.getSearchResult(tableType, sql, judgeName);
+				out.println("result by WORK_PLACE");
+				out.println(result);
+				sql = "select * from POST_INFORMATION where CATEGORY_NAME like \'%"
+						+ keyword
+						+ "%\'";
+				result = rm.getSearchResult(tableType, sql, judgeName);
+				out.println("result by CATEGORY_NAME");
+				out.println(result);
+				return;
+			}
 			break;
 		case RequestCode.GET_PLACES: // GET_PLACES
 			sql = rm.getSearchSql("PLACE");
@@ -106,8 +141,8 @@ public class LoginServlet extends HttpServlet {
 		case RequestCode.HIDE_POST:// HIDE_POST
 			break;
 		case RequestCode.CAT_USER:// CAT_USER
-			user_id=request.getParameter("USER_ID");
-			sql = rm.getSearchSql("USER","USER_ID",user_id);
+			user_id = request.getParameter("USER_ID");
+			sql = rm.getSearchSql("USER", "USER_ID", user_id);
 			tableType = new User();
 			break;
 		case RequestCode.EDIT_USER:// EDIT_USER
@@ -121,8 +156,8 @@ public class LoginServlet extends HttpServlet {
 			break;
 		case RequestCode.CAT_MARK_INFO:// CAT_MARK
 			user_id = request.getParameter("USER_ID");
-			sql=rm.getSearchSql("MARK_INFO","USER_ID",user_id);
-			tableType=new Mark_info();
+			sql = rm.getSearchSql("MARK_INFO", "USER_ID", user_id);
+			tableType = new Mark_info();
 			break;
 		case RequestCode.CAT_MARK_COM:// CAT_WATCH
 			sql = rm.getSearchSql("MARK_COM");
@@ -130,8 +165,8 @@ public class LoginServlet extends HttpServlet {
 			break;
 		case RequestCode.CAT_WILLING:// CAT_WILLING
 			user_id = request.getParameter("USER_ID");
-			sql=rm.getSearchSql("MARK_INFO","USER_ID",user_id);
-			tableType=new Mark_info();
+			sql = rm.getSearchSql("MARK_INFO", "USER_ID", user_id);
+			tableType = new Mark_info();
 			break;
 		case RequestCode.EDIT_WILLING:// EDIT_WILLING
 			break;
@@ -149,13 +184,15 @@ public class LoginServlet extends HttpServlet {
 			sql = sql + " limit " + limit;
 		else
 			sql = sql + " limit 10";// 到这步SQL语句生成完毕
-		if (nullParament == null) {
+		if (exceptionName != null) {
+			out.println(exceptionName);
+		} else if (nullParament != null) {
+			out.println(nullParament + ": No parament input");
+		} else {
 			result = rm.getSearchResult(tableType, sql, judgeName);
 			out.println(result);
 			out.flush();
 			out.close();
-		}else{
-			out.println(nullParament+"No parament input");
 		}
 	}
 

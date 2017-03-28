@@ -204,7 +204,7 @@ public class RequestMethods {
 				p.setExperience_requirement(ret.getString("EXPERIENCE_REQUIREMENT"));
 				p.setEducation_requirement(ret.getString("EDUCATION_REQUIREMENT"));
 				p.setPosition_count(ret.getInt("POSITION_COUNT"));
-				p.setPostition_type(ret.getString("POSTITION_TYPE"));
+				p.setPostition_type(ret.getString("POSITION_TYPE"));
 				p.setCategory_name(ret.getString("CATEGORY_NAME"));
 				list.add(p);
 			}
