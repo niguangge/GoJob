@@ -88,7 +88,7 @@ public class LoginServlet extends HttpServlet {
 				nullParament = "CATEGORY";
 			} else if (catevalue == null) {
 				nullParament = "CATE_VALUE";
-			} else if (cate.equals("COMPANY_NAME") || cate.equals("WORK_PLACE")
+			} else if (cate.equals("COMPANY_NAME") || cate.equals("PLACE_NAME")
 					|| cate.equals("CATEGORY_NAME")) {
 				sql = rm.getSearchSql("POST_INFORMATION", cate, catevalue);
 				tableType = new Post_information();
@@ -146,6 +146,11 @@ public class LoginServlet extends HttpServlet {
 			updateFlag = true;
 			break;
 		case RequestCode.HIDE_POST:// HIDE_POST
+			user_id = request.getParameter("USER_ID");
+			post_id = request.getParameter("POST_ID");
+			sql = "insert into HIDE values(\"" + user_id + "\","
+					+ post_id + ")";
+			updateFlag = true;
 			break;
 		case RequestCode.CAT_USER:// CAT_USER
 			user_id = request.getParameter("USER_ID");
@@ -167,7 +172,8 @@ public class LoginServlet extends HttpServlet {
 			tableType = new Mark_info();
 			break;
 		case RequestCode.CAT_MARK_COM:// CAT_WATCH
-			sql = rm.getSearchSql("MARK_COM");
+			user_id = request.getParameter("USER_ID");
+			sql = rm.getSearchSql("MARK_COM","USER_ID", user_id);
 			tableType = new Mark_com();
 			break;
 		case RequestCode.CAT_WILLING:// CAT_WILLING
@@ -192,6 +198,38 @@ public class LoginServlet extends HttpServlet {
 			break;
 		case RequestCode.GET_RECOMAND:// GET_RECOMAND
 			break;
+		case RequestCode.SEARCH_BY_PLACES:// GET_RECOMAND
+			String place_name = request.getParameter("PLACE_NAME");
+			if (place_name == null) {
+				nullParament = "PLACE_NAME";
+			}
+			sql = rm.getSearchSql("PLACE", "PLACE_NAME", place_name);
+			tableType = new Place();
+			break;
+		case RequestCode.SEARCH_BY_COMPANY:// GET_RECOMAND
+			String company_name = request.getParameter("COMPANY_NAME");
+			if (company_name == null) {
+				nullParament = "COMPANY_NAME";
+			}
+			sql = rm.getSearchSql("COMPANY", "COMPANY_NAME", company_name);
+			tableType = new Company();
+			break;
+		case RequestCode.SEARCH_BY_INDUSTRY:// GET_RECOMAND
+			String industry_name = request.getParameter("CATEGORY_NAME");
+			if (industry_name == null) {
+				nullParament = "CATEGORY_NAME";
+			}
+			sql = rm.getSearchSql("INDUSTRY_CATEGORY", "CATEGORY_NAME", industry_name);
+			tableType = new Industry_category();
+			break;
+		case RequestCode.SEARCH_BY_POST_ID:// GET_RECOMAND
+			post_id = request.getParameter("POST_ID");
+			if (post_id == null) {
+				nullParament = "POST_ID";
+			}
+			sql = rm.getSearchSql("POST_INFORMATION", "POST_ID", post_id);
+			tableType = new Post_information();
+			break;
 		default:
 			out.println("Error requestcode");
 			return;
@@ -211,6 +249,7 @@ public class LoginServlet extends HttpServlet {
 				sql = sql + " limit " + limit;
 			else
 				sql = sql + " limit 10";// 到这步SQL语句生成完毕
+			//out.println(sql);
 			result = rm.getSearchResult(tableType, sql, judgeName);
 			out.println(result);
 			out.flush();

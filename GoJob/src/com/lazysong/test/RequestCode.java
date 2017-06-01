@@ -22,4 +22,8 @@ public class RequestCode {
 	public static final int WATCH_CMP = 19;
 	public static final int UNWATCH_CMP = 20;
 	public static final int GET_RECOMAND = 21;
+	public static final int SEARCH_BY_PLACES=22;
+	public static final int SEARCH_BY_COMPANY=23;
+	public static final int SEARCH_BY_INDUSTRY=24;
+	public static final int SEARCH_BY_POST_ID=25;
 }
