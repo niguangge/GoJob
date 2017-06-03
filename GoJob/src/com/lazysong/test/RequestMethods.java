@@ -20,11 +20,11 @@ import com.lazysong.test.beans.User;
 import com.lazysong.test.beans.Willings;
 
 public class RequestMethods {
-	public static final String url = "jdbc:mysql://192.168.43.142/GoJob";
+	public static final String url = "jdbc:mysql://www.lazysong.cn/gojob?useUnicode=true&characterEncoding=UTF-8";
 	//public static final String url = "jdbc:mysql://192.168.220.128/GoJob";// 用于本地虚拟机测试
 	public static final String name = "com.mysql.jdbc.Driver";
 	public static final String user = "root";
-	public static final String password = "1";
+	public static final String password = "123";
 	public Connection conn = null;
 	public PreparedStatement pst = null;
 	ResultSet ret = null;

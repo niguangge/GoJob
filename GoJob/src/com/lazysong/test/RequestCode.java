@@ -26,4 +26,6 @@ public class RequestCode {
 	public static final int SEARCH_BY_COMPANY=23;
 	public static final int SEARCH_BY_INDUSTRY=24;
 	public static final int SEARCH_BY_POST_ID=25;
+	public static final int QUERY_COUNT_MARK_COMPANY=26;
+	public static final int QUERY_COUNT_MARK_POST=27;
 }

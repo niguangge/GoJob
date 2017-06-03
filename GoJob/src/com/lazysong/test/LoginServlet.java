@@ -230,6 +230,20 @@ public class LoginServlet extends HttpServlet {
 			sql = rm.getSearchSql("POST_INFORMATION", "POST_ID", post_id);
 			tableType = new Post_information();
 			break;
+		case RequestCode.QUERY_COUNT_MARK_COMPANY:
+			company_id = request.getParameter("COMPANY_ID");
+			sql="select count(*) from POST_INFORMATION where COMPANY_ID in ('"+company_id+"')";
+			tableType = new Mark_com();
+			break;
+		case RequestCode.QUERY_COUNT_MARK_POST:
+			post_id = request.getParameter("POST_ID");
+			sql="select count(*) from POST_INFORMATION where POST_ID in ('"+post_id+"')";
+			tableType = new Mark_info();
+			break;
+		case 1000:
+			sql="select * from PLACE where PLACE_NAME=\'Ыежн\'";
+			tableType=new Place();
+			break;
 		default:
 			out.println("Error requestcode");
 			return;
