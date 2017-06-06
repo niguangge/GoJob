@@ -1,16 +1,27 @@
 package com.lazysong.test.beans;
 
+import java.io.Serializable;
 import java.util.Date;
 
+import com.google.gson.annotations.SerializedName;
 
-public class User {
-	private String user_id;
-	private String password;
-	private String nickname;
-	private String sign;
-	private String img_name;
-	private byte sex;
-	private Date birthday;
+
+public class User implements Serializable{
+	@SerializedName("user_id")
+	protected String user_id;
+	@SerializedName("nickname")
+	protected String nickname;
+	@SerializedName("img_name")
+	protected String img_name;//´æ´¢url
+	@SerializedName("sex")
+	protected byte sex;
+	@SerializedName("birthday")
+	protected Date birthday;
+	@SerializedName("sign")
+	protected String sign;
+	@SerializedName("password")
+	protected String password;
+
 	public static final String name="User";
 	public User() {
 		super();

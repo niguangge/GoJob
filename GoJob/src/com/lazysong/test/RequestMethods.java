@@ -8,7 +8,9 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.lazysong.test.beans.Company;
+import com.lazysong.test.beans.Count;
 import com.lazysong.test.beans.Hide;
 import com.lazysong.test.beans.Industry_category;
 import com.lazysong.test.beans.Mark_com;
@@ -20,15 +22,18 @@ import com.lazysong.test.beans.User;
 import com.lazysong.test.beans.Willings;
 
 public class RequestMethods {
-	public static final String url = "jdbc:mysql://192.168.220.128/GoJob";// 用于本地虚拟机测试
+	public static final String url = "jdbc:mysql://www.lazysong.cn/gojob?useUnicode=true&characterEncoding=UTF-8";
+	//public static final String url = "jdbc:mysql://192.168.220.128/GoJob";// 用于本地虚拟机测试
 	public static final String name = "com.mysql.jdbc.Driver";
 	public static final String user = "root";
-	public static final String password = "1";
+	public static final String password = "123";
 	public Connection conn = null;
 	public PreparedStatement pst = null;
 	ResultSet ret = null;
 	String result = "";
-	Gson gson = new Gson();
+	Gson gson = new GsonBuilder()  
+	  .setDateFormat("yyyy-MM-dd")  
+	  .create();
 
 	public RequestMethods() {
 
@@ -134,6 +139,9 @@ public class RequestMethods {
 		case "Willings":
 			getWillingsList(tableType, list, ret);
 			break;
+		case"Count":
+			getCount(tableType, list, ret);
+			break;
 		default:
 			break;
 		}
@@ -204,7 +212,7 @@ public class RequestMethods {
 				p.setExperience_requirement(ret.getString("EXPERIENCE_REQUIREMENT"));
 				p.setEducation_requirement(ret.getString("EDUCATION_REQUIREMENT"));
 				p.setPosition_count(ret.getInt("POSITION_COUNT"));
-				p.setPostition_type(ret.getString("POSTITION_TYPE"));
+				p.setPostition_type(ret.getString("POSITION_TYPE"));
 				p.setCategory_name(ret.getString("CATEGORY_NAME"));
 				list.add(p);
 			}
@@ -322,5 +330,30 @@ public class RequestMethods {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+	public void getCount(Object tableType,ArrayList list, ResultSet ret){
+		try {
+			ret.next();
+			Count p =new Count();
+			p.setCount(ret.getInt("COUNT(*)"));
+			list.add(p);
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	public int getUpdateResult(String sql) {
+		// TODO Auto-generated method stub
+			try {
+				pst = conn.prepareStatement(sql);
+				return pst.executeUpdate();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				return 0;
+			}
+
 	}
 }

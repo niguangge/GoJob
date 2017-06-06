@@ -12,7 +12,7 @@ public class Post_information {
 	private String experience_requirement;
 	private String education_requirement;
 	private int position_count;
-	private String postition_type;
+	private String position_type;
 	private String category_name;
 	public static final String name="Post_information";
 	
@@ -31,7 +31,7 @@ public class Post_information {
 		this.experience_requirement = experience_requirement;
 		this.education_requirement = education_requirement;
 		this.position_count = position_count;
-		this.postition_type = postition_type;
+		this.position_type = postition_type;
 		this.category_name = category_name;
 	}
 	public Post_information() {
@@ -94,10 +94,10 @@ public class Post_information {
 		this.position_count = position_count;
 	}
 	public String getPostition_type() {
-		return postition_type;
+		return position_type;
 	}
 	public void setPostition_type(String postition_type) {
-		this.postition_type = postition_type;
+		this.position_type = postition_type;
 	}
 	public String getCategory_name() {
 		return category_name;
