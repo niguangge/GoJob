@@ -8,7 +8,9 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.lazysong.test.beans.Company;
+import com.lazysong.test.beans.Count;
 import com.lazysong.test.beans.Hide;
 import com.lazysong.test.beans.Industry_category;
 import com.lazysong.test.beans.Mark_com;
@@ -29,7 +31,9 @@ public class RequestMethods {
 	public PreparedStatement pst = null;
 	ResultSet ret = null;
 	String result = "";
-	Gson gson = new Gson();
+	Gson gson = new GsonBuilder()  
+	  .setDateFormat("yyyy-MM-dd")  
+	  .create();
 
 	public RequestMethods() {
 
@@ -134,6 +138,9 @@ public class RequestMethods {
 			break;
 		case "Willings":
 			getWillingsList(tableType, list, ret);
+			break;
+		case"Count":
+			getCount(tableType, list, ret);
 			break;
 		default:
 			break;
@@ -319,6 +326,18 @@ public class RequestMethods {
 				p.setBirthday(ret.getDate("BIRTHDAY"));
 				list.add(p);
 			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	public void getCount(Object tableType,ArrayList list, ResultSet ret){
+		try {
+			ret.next();
+			Count p =new Count();
+			p.setCount(ret.getInt("COUNT(*)"));
+			list.add(p);
+			
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

@@ -19,5 +19,14 @@
 			<attribute name="owner.project.facets" value="java"/>
 		</attributes>
 	</classpathentry>
+	<classpathentry kind="lib" path="G:/工程实践/jsonlib/commons-beanutils-1.7.0.jar"/>
+	<classpathentry kind="lib" path="G:/工程实践/jsonlib/commons-collections.jar"/>
+	<classpathentry kind="lib" path="G:/工程实践/jsonlib/commons-collections-3.2.jar"/>
+	<classpathentry kind="lib" path="G:/工程实践/jsonlib/commons-httpclient-3.0.1.jar"/>
+	<classpathentry kind="lib" path="G:/工程实践/jsonlib/commons-lang-2.4.jar"/>
+	<classpathentry kind="lib" path="G:/工程实践/jsonlib/commons-logging-1.0.4.jar"/>
+	<classpathentry kind="lib" path="G:/工程实践/jsonlib/ezmorph-1.0.3.jar"/>
+	<classpathentry kind="lib" path="G:/工程实践/jsonlib/json-lib-2.2.3-jdk15.jar"/>
+	<classpathentry kind="lib" path="G:/工程实践/jsonlib/json-lib-2.3-jdk13.jar"/>
 	<classpathentry kind="output" path="WebRoot/WEB-INF/classes"/>
 </classpath>

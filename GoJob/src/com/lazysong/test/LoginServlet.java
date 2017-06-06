@@ -2,13 +2,21 @@ package com.lazysong.test;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import net.sf.json.JSONObject;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
+import com.lazysong.test.beans.BaseUser;
 import com.lazysong.test.beans.Company;
+import com.lazysong.test.beans.Count;
 import com.lazysong.test.beans.Industry_category;
 import com.lazysong.test.beans.Mark_com;
 import com.lazysong.test.beans.Mark_info;
@@ -18,6 +26,8 @@ import com.lazysong.test.beans.Resume;
 import com.lazysong.test.beans.User;
 
 public class LoginServlet extends HttpServlet {
+
+	// private static final String "" = null;
 
 	/**
 	 * Constructor of the object.
@@ -80,7 +90,55 @@ public class LoginServlet extends HttpServlet {
 			tableType = new User();
 			break;
 		case RequestCode.UPLOAD_USER: // UPLOAD_USER
+			Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
+			String userstr = request.getParameter("USER_INFO");
+			User user = gson.fromJson(userstr, User.class);
+			// JSONObject jsonObj = JSONObject.fromObject(json);
+			user_id = null;
+			String password = null;
+			String nickname = null;
+			String sign = null;
+			String imgname = null;
+			int sex = 0;
+			String birthday = null;
+			if (user.getUser_id() == null) {
+				nullParament = "USER_ID";
+			} else {
+				user_id = user.getUser_id();
+			}
+			if (user.getPassword() == null) {
+				password = "1";
+			} else {
+				password = user.getPassword();
+			}
+			if (user.getNickname() == null) {
+				nickname = "1";
+			} else {
+				nickname = user.getNickname();
+				nickname = new String(nickname.getBytes("iso-8859-1"), "utf-8");
+			}
+			if (user.getSign() == null) {
+				sign = "1";
+			} else {
+				sign = user.getSign();
+			}
+			if (user.getImg_name() == null) {
+				imgname = "1";
+			} else {
+				imgname = user.getImg_name();
+			}
+			if (user.getBirthday() == null) {
+				birthday = "2017-03-13";
+			} else {
+				birthday = user.getBirthday().toString();
+			}
+
+			sql = "insert into USER values('" + user_id + "','" + password
+					+ "','" + nickname + "','" + sign + "','" + imgname + "',"
+					+ sex + ",'" + birthday + "') "	;
+			updateFlag = true;
 			break;
+
 		case RequestCode.CAT_BY_CATEGRY: // CAT_BY_CATEGRY
 			String cate = request.getParameter("CATEGORY");
 			String catevalue = request.getParameter("CATE_VALUE");
@@ -90,6 +148,10 @@ public class LoginServlet extends HttpServlet {
 				nullParament = "CATE_VALUE";
 			} else if (cate.equals("COMPANY_NAME") || cate.equals("PLACE_NAME")
 					|| cate.equals("CATEGORY_NAME")) {
+				cate = new String(cate.getBytes("iso-8859-1"), "utf-8");
+				catevalue = new String(catevalue.getBytes("iso-8859-1"),
+						"utf-8");
+
 				sql = rm.getSearchSql("POST_INFORMATION", cate, catevalue);
 				tableType = new Post_information();
 			} else {
@@ -101,6 +163,7 @@ public class LoginServlet extends HttpServlet {
 			if (keyword == null) {
 				nullParament = "KEYWORD";
 			} else {
+				keyword = new String(keyword.getBytes("iso-8859-1"), "utf-8");
 				tableType = new Post_information();
 				sql = "select * from POST_INFORMATION where COMPANY_NAME like \'%"
 						+ keyword + "%\'";
@@ -135,21 +198,23 @@ public class LoginServlet extends HttpServlet {
 		case RequestCode.MARK_POST: // MARK_POST
 			user_id = request.getParameter("USER_ID");
 			String post_id = request.getParameter("POST_ID");
-			sql = "insert into MARK_INFO values(\"" + user_id + "\","
-					+ post_id + ")";
+			sql = "insert into MARK_INFO values(\"" + user_id + "\"," + post_id
+					+ ")";
 			updateFlag = true;
 			break;
 		case RequestCode.UNMARK_POST: // UNMARK_POST
 			user_id = request.getParameter("USER_ID");
 			post_id = request.getParameter("POST_ID");
-			sql = "delete from MARK_INFO where USER_ID="+user_id+"&POST_ID="+post_id;
+			sql = "delete from MARK_INFO where USER_ID='" + user_id
+					+ "'and POST_ID=" + post_id;
+			System.out.println(sql);
 			updateFlag = true;
 			break;
 		case RequestCode.HIDE_POST:// HIDE_POST
 			user_id = request.getParameter("USER_ID");
 			post_id = request.getParameter("POST_ID");
-			sql = "insert into HIDE values(\"" + user_id + "\","
-					+ post_id + ")";
+			sql = "insert into HIDE values(\"" + user_id + "\"," + post_id
+					+ ")";
 			updateFlag = true;
 			break;
 		case RequestCode.CAT_USER:// CAT_USER
@@ -158,6 +223,57 @@ public class LoginServlet extends HttpServlet {
 			tableType = new User();
 			break;
 		case RequestCode.EDIT_USER:// EDIT_USER
+			gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
+			userstr = request.getParameter("USER_INFO");
+			user = gson.fromJson(userstr, User.class);
+			// JSONObject jsonObj = JSONObject.fromObject(json);
+			user_id = null;
+			password = null;
+			nickname = null;
+			sign = null;
+			imgname = null;
+			sex = 0;
+			birthday = null;
+			sql="update USER set ";
+			if (user.getUser_id() == null) {
+				nullParament = "USER_ID";
+			} else {
+				user_id = user.getUser_id();
+			}
+			if (user.getPassword() == null) {
+			} else {
+				password = user.getPassword();
+				sql+="PASSWORD='"+password+"',";
+			}
+			if (user.getNickname() == null) {
+			} else {
+				nickname = user.getNickname();
+				nickname = new String(nickname.getBytes("iso-8859-1"), "utf-8");
+				sql+="NICKNAME='"+nickname+"',";
+			}
+			if (user.getSign() == null) {
+			} else {
+				sign = user.getSign();
+				sql+="SIGN='"+sign+"',";
+			}
+			if (user.getImg_name() == null) {
+			} else {
+				imgname = user.getImg_name();
+				sql+="IMG_NAME='"+imgname+"',";
+			}
+				sex = user.getSex();
+				sql+="SEX='"+sex+"',";
+			if (user.getBirthday() == null) {
+			} else {
+				birthday = user.getBirthday().toString();
+				sql+="BIRTHDAY='"+birthday+"',";
+			}
+			if(sql.endsWith(",")){
+				sql=sql.substring(0,sql.length()-1);
+			}
+			sql+=" where USER_ID='"+user_id+"'";
+			System.out.println(sql);
+			updateFlag = true;
 			break;
 		case RequestCode.CAT_RESUME:// CAT_RESUME
 			user_id = request.getParameter("USER_ID");
@@ -165,15 +281,61 @@ public class LoginServlet extends HttpServlet {
 			tableType = new Resume();
 			break;
 		case RequestCode.EDIT_RESUME:// EDIT_RESUME
+			gson = new GsonBuilder().create();
+			userstr = request.getParameter("RESUME");
+			Resume resume = gson.fromJson(userstr, Resume.class);
+			// JSONObject jsonObj = JSONObject.fromObject(json);
+			user_id = null;
+			byte resume_no = 0;
+			String education_experience=null;
+			String major=null;
+			String job_experience=null;
+			sql="update RESUME set ";
+			if (resume.getUser_id() == null) {
+				nullParament = "USER_ID";
+			} else {
+				user_id = resume.getUser_id();
+			}
+			if (resume.getResume_no() == 0) {
+				nullParament = "RESUME_NO";
+			} else {
+				resume_no = resume.getResume_no();
+			}
+			if (resume.getEducation_experience() == null) {
+			} else {
+				education_experience = resume.getEducation_experience();
+				education_experience = new String(education_experience.getBytes("iso-8859-1"), "utf-8");
+				sql+="EDUCATION_EXPERIENCE='"+education_experience+"',";
+			}
+			if (resume.getMajor() == null) {
+			} else {
+				sign = resume.getMajor();
+				sql+="MAJOR='"+major+"',";
+			}
+			if (resume.getJob_experience() == null) {
+			} else {
+				job_experience = resume.getJob_experience();
+				job_experience = new String(job_experience.getBytes("iso-8859-1"), "utf-8");
+				sql+="JOB_EXPERIENCE='"+job_experience+"',";
+			}
+			if(sql.endsWith(",")){
+				sql=sql.substring(0,sql.length()-1);
+			}
+			sql+=" where USER_ID='"+user_id+"' and RESUME_NO="+resume_no;
+			System.out.println(sql);
+			updateFlag = true;
 			break;
 		case RequestCode.CAT_MARK_INFO:// CAT_MARK
 			user_id = request.getParameter("USER_ID");
-			sql = rm.getSearchSql("MARK_INFO", "USER_ID", user_id);
-			tableType = new Mark_info();
+			// sql = rm.getSearchSql("MARK_INFO", "USER_ID", user_id);
+			sql = "select * from POST_INFORMATION "
+					+ "where POST_ID=any(select POST_ID from MARK_INFO "
+					+ "where USER_ID='" + user_id + "')";
+			tableType = new Post_information();
 			break;
 		case RequestCode.CAT_MARK_COM:// CAT_WATCH
 			user_id = request.getParameter("USER_ID");
-			sql = rm.getSearchSql("MARK_COM","USER_ID", user_id);
+			sql = rm.getSearchSql("MARK_COM", "USER_ID", user_id);
 			tableType = new Mark_com();
 			break;
 		case RequestCode.CAT_WILLING:// CAT_WILLING
@@ -193,7 +355,8 @@ public class LoginServlet extends HttpServlet {
 		case RequestCode.UNWATCH_CMP:// UNWATCH_CMP
 			user_id = request.getParameter("USER_ID");
 			company_id = request.getParameter("COMPANY_ID");
-			sql = "delete from MARK_COM where USER_ID="+user_id+"&COMPANY_ID="+company_id;
+			sql = "delete from MARK_COM where USER_ID=" + user_id
+					+ "&COMPANY_ID=" + company_id;
 			updateFlag = true;
 			break;
 		case RequestCode.GET_RECOMAND:// GET_RECOMAND
@@ -203,24 +366,33 @@ public class LoginServlet extends HttpServlet {
 			if (place_name == null) {
 				nullParament = "PLACE_NAME";
 			}
-			sql = rm.getSearchSql("PLACE", "PLACE_NAME", place_name);
-			tableType = new Place();
+			// sql = rm.getSearchSql("PLACE", "PLACE_NAME", place_name);
+			place_name = new String(place_name.getBytes("iso-8859-1"), "utf-8");
+			sql = "select * from POST_INFORMATION where WORK_PLACE like \'%"
+					+ place_name + "%\'";
+			tableType = new Post_information();
 			break;
 		case RequestCode.SEARCH_BY_COMPANY:// GET_RECOMAND
 			String company_name = request.getParameter("COMPANY_NAME");
 			if (company_name == null) {
 				nullParament = "COMPANY_NAME";
 			}
-			sql = rm.getSearchSql("COMPANY", "COMPANY_NAME", company_name);
-			tableType = new Company();
+			company_name = new String(company_name.getBytes("iso-8859-1"),
+					"utf-8");
+			sql = "select * from POST_INFORMATION where COMPANY_NAME like \'%"
+					+ company_name + "%\'";
+			tableType = new Post_information();
 			break;
 		case RequestCode.SEARCH_BY_INDUSTRY:// GET_RECOMAND
 			String industry_name = request.getParameter("CATEGORY_NAME");
 			if (industry_name == null) {
 				nullParament = "CATEGORY_NAME";
 			}
-			sql = rm.getSearchSql("INDUSTRY_CATEGORY", "CATEGORY_NAME", industry_name);
-			tableType = new Industry_category();
+			industry_name = new String(industry_name.getBytes("iso-8859-1"),
+					"utf-8");
+			sql = "select * from POST_INFORMATION where CATEGORY_NAME like \'%"
+					+ industry_name + "%\'";
+			tableType = new Post_information();
 			break;
 		case RequestCode.SEARCH_BY_POST_ID:// GET_RECOMAND
 			post_id = request.getParameter("POST_ID");
@@ -232,17 +404,122 @@ public class LoginServlet extends HttpServlet {
 			break;
 		case RequestCode.QUERY_COUNT_MARK_COMPANY:
 			company_id = request.getParameter("COMPANY_ID");
-			sql="select count(*) from POST_INFORMATION where COMPANY_ID in ('"+company_id+"')";
-			tableType = new Mark_com();
+			sql = "select count(*) from MARK_COM where COMPANY_ID in ('"
+					+ company_id + "')";
+			tableType = new Count();
 			break;
 		case RequestCode.QUERY_COUNT_MARK_POST:
 			post_id = request.getParameter("POST_ID");
-			sql="select count(*) from POST_INFORMATION where POST_ID in ('"+post_id+"')";
-			tableType = new Mark_info();
+			sql = "select count(*) from MARK_INFO where POST_ID in ('"
+					+ post_id + "')";
+			tableType = new Count();
 			break;
+		case RequestCode.SEARCH_BY_WILLINGS:// ??
+			user_id = request.getParameter("USER_ID");
+			if (user_id == null) {
+				nullParament = "USER_ID";
+			}
+			sql = "select * from POST_INFORMATION "
+					+ "where CATEGORY_NAME=any(select CATEGORY_NAME from INDUSTRY_CATEGORY "
+					+ "where CATEGORY_ID =any(select CATEGORY_ID from WILLINGS where USER_ID="
+					+ user_id
+					+ ")) and "
+					+ "WORK_PLACE=any(select PLACE_NAME from PLACE where PLACE_ID=any(select WORK_PLACE from WILLINGS "
+					+ "where USER_ID=" + user_id + "))";
+			tableType = new Post_information();
+			break;
+		case RequestCode.SEARCH_BY_MULTI_VALUE:
+			String placeNameList = request.getParameter("PLACE_NAME");
+			String industryNameList = request.getParameter("INDUSTRY_NAME");
+			placeNameList = new String(placeNameList.getBytes("iso-8859-1"),
+					"utf-8");
+			industryNameList = new String(
+					industryNameList.getBytes("iso-8859-1"), "utf-8");
+			sql = "select * from POST_INFORMATION where WORK_PLACE in ('"
+					+ placeNameList + "') and CATEGORY_NAME in ('"
+					+ industryNameList + "')";
+			tableType = new Post_information();
+			break;
+		case RequestCode.ADD_WILLINGS:
+			user_id = request.getParameter("USER_ID");
+			String willing_no = request.getParameter("WILLING_NO");
+			String work_place = request.getParameter("WORK_PLACE");
+			String category_id = request.getParameter("CATEGORY_ID");
+			sql = "insert into WILLINGS (USER_ID,WILLING_NO,WORK_PLACE,CATEGORY_ID) values(\""
+					+ user_id
+					+ "\","
+					+ willing_no
+					+ ","
+					+ work_place
+					+ ","
+					+ category_id + ")";
+			updateFlag = true;
+			System.out.println(sql);
+			break;
+		case RequestCode.SEARCH_BY_WORK_TYPE:
+			String position_type = request.getParameter("POSITION_TYPE");
+			if (position_type == null) {
+				nullParament = "POSITION_TYPE";
+			}
+			position_type = new String(position_type.getBytes("iso-8859-1"),
+					"utf-8");
+			sql = "select * from POST_INFORMATION where POSITION_TYPE like \'%"
+					+ position_type + "%\'";
+			tableType = new Post_information();
+			break;
+		case RequestCode.TEST_JSON:
+			// Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd")
+			// .create();
+			// String userstr = request.getParameter("USER_INFO");
+			// BaseUser user = gson.fromJson(userstr, BaseUser.class);
+			// // JSONObject jsonObj = JSONObject.fromObject(json);
+			// user_id=null;
+			// String password=null;
+			// String nickname=null;
+			// String sign=null;
+			// String imgname=null;
+			// int sex=0;
+			// String birthday=null;
+			// if(user.getUserid()==null){
+			// nullParament="USER_ID";
+			// }else{
+			// user_id=user.getUserid();
+			// }
+			// if(user.getPassword()==null){
+			// password="1";
+			// }else{
+			// password=user.getPassword();
+			// }
+			// if(user.getNickname()==null){
+			// nickname="1";
+			// }else{
+			// nickname=user.getNickname();
+			// }
+			// if(user.getSign()==null){
+			// sign="1";
+			// }else{
+			// sign=user.getSign();
+			// }
+			// if(user.getImgName()==null){
+			// imgname="1";
+			// }else{
+			// imgname=user.getImgName();
+			// }
+			// if(user.getBirthday()==null){
+			// birthday="2017-03-13";
+			// }else{
+			// birthday=user.getBirthday().toString();
+			// }
+			//
+			// sql = "insert into USER values('" + user_id + "','"
+			// + password + "','" + nickname + "','"
+			// + sign + "','" + imgname + "',"
+			// + sex + ",'" + birthday + "')";
+			// updateFlag = true;
+			// break;
 		case 1000:
-			sql="select * from PLACE where PLACE_NAME=\'苏州\'";
-			tableType=new Place();
+			sql = "select * from PLACE where PLACE_NAME=\'苏州\'";
+			tableType = new Place();
 			break;
 		default:
 			out.println("Error requestcode");
@@ -263,9 +540,10 @@ public class LoginServlet extends HttpServlet {
 				sql = sql + " limit " + limit;
 			else
 				sql = sql + " limit 10";// 到这步SQL语句生成完毕
-			//out.println(sql);
+			System.out.println(sql);
 			result = rm.getSearchResult(tableType, sql, judgeName);
 			out.println(result);
+			System.out.println(result);
 			out.flush();
 			out.close();
 		}
@@ -365,21 +643,10 @@ public class LoginServlet extends HttpServlet {
 	// out.close();
 	// }
 
-	// public void doPost(HttpServletRequest request, HttpServletResponse
-	// response)
-	// throws ServletException, IOException {
-	//
-	// response.setContentType("text/html");
-	// response.setCharacterEncoding("UTF-8");
-	// String limit = request.getParameter("limit");
-	// PrintWriter out = response.getWriter();
-	// if (limit != null && !limit.isEmpty())
-	// out.println(new Demo().query(limit));
-	// else
-	// out.println(new Demo().query("10"));
-	// out.flush();
-	// out.close();
-	// }
+	public void doPost(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+		doGet(request, response);
+	}
 
 	/**
 	 * Initialization of the servlet. <br>
